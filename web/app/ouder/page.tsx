@@ -68,7 +68,7 @@ export default function OuderPage() {
       <h1 className="text-2xl font-bold">{t("parent.title")}</h1>
       <p className="mt-1 text-slate-600">{t("parent.subtitle")}</p>
 
-      <form onSubmit={link} className="mt-6 flex flex-wrap items-end gap-3 rounded-xl border border-slate-200 bg-white p-5">
+      <form onSubmit={link} className="mt-6 flex flex-wrap items-end gap-3 rounded-xl border border-slate-200 bg-white p-4 sm:p-5">
         <label className="text-sm font-medium">
           {t("parent.email")}
           <input
@@ -93,7 +93,7 @@ export default function OuderPage() {
         {msg && <p className="text-sm text-slate-600">{msg}</p>}
       </form>
 
-      <div className="mt-8 flex gap-2">
+      <div className="mt-8 flex flex-wrap gap-2">
         {children.map((c) => (
           <button
             key={c.id}
@@ -117,7 +117,7 @@ export default function OuderPage() {
           <ul className="mt-2 space-y-2">
             {progress.attempts.map((a) => (
               <li key={a.attemptId}
-                  className="flex items-center justify-between rounded-lg border border-slate-200 bg-white px-4 py-3">
+                  className="flex flex-wrap items-center justify-between gap-2 rounded-lg border border-slate-200 bg-white px-4 py-3">
                 <div>
                   <p className="font-medium">{a.title}</p>
                   <p className="text-sm text-slate-500">

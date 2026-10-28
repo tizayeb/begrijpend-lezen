@@ -84,7 +84,7 @@ export default function VoortgangPage() {
               {data.attempts.map((a) => (
                 <li
                   key={a.attemptId}
-                  className="flex items-center justify-between rounded-lg border border-slate-200 bg-white px-4 py-3"
+                  className="flex flex-wrap items-center justify-between gap-2 rounded-lg border border-slate-200 bg-white px-4 py-3"
                 >
                   <div>
                     <p className="font-medium">{a.title}</p>

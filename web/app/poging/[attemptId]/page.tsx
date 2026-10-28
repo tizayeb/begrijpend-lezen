@@ -129,7 +129,7 @@ export default function PogingPage() {
     <>
       <Navbar />
       <main className="mx-auto max-w-5xl px-4 py-8">
-        <div className="mb-4 flex items-center justify-between">
+        <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
           <h1 className="text-2xl font-bold">{snapshot.title}</h1>
           <span className="text-sm text-slate-500">
             {savedAt ? `${t("exercise.savedAt")} ${savedAt}` : saved ? t("exercise.saving") : ""}
@@ -260,11 +260,11 @@ function Navbar() {
   const { t } = useI18n();
   return (
     <header className="border-b border-slate-200 bg-white">
-      <nav className="mx-auto flex max-w-5xl items-center gap-4 px-4 py-3">
+      <nav className="mx-auto flex max-w-5xl flex-wrap items-center gap-x-4 gap-y-2 px-4 py-3">
         <a href="/bibliotheek" className="text-lg font-bold text-emerald-700">
           {t("brand")}
         </a>
-        <div className="flex-grow" />
+        <div className="flex w-full sm:w-auto sm:flex-1" />
         <a href="/bibliotheek" className="text-sm font-medium hover:text-emerald-700">
           {t("nav.library")}
         </a>

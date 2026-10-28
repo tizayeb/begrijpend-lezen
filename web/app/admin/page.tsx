@@ -261,7 +261,8 @@ export default function AdminPage() {
         </p>
       )}
 
-      <table className="mt-6 w-full text-left text-sm">
+      <div className="mt-6 overflow-x-auto">
+<table className="mt-6 w-full min-w-[640px] text-left text-sm">
         <thead className="text-slate-500">
           <tr>
             <th className="py-2">{t("table.title")}</th>
@@ -310,6 +311,7 @@ export default function AdminPage() {
           ))}
         </tbody>
       </table>
+</div>
 
       <section className="mt-10 rounded-xl border border-slate-200 bg-white p-6">
         <h2 className="text-xl font-bold">{t("admin.bulkTitle")}</h2>
@@ -353,7 +355,7 @@ export default function AdminPage() {
 
       <h2 className="mt-10 text-xl font-bold">{t("admin.newTitle")}</h2>
 
-      <div className="mt-4 grid gap-4 rounded-xl border border-slate-200 bg-white p-6 md:grid-cols-2">
+      <div className="mt-4 grid gap-4 rounded-xl border border-slate-200 bg-white p-4 md:p-6 xl:grid-cols-2">
         <label className="text-sm font-medium">
           {t("admin.form.title")}
           <input value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })}

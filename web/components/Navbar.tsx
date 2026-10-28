@@ -37,11 +37,11 @@ export function Navbar() {
 
   return (
     <header className="border-b border-slate-200 bg-white">
-      <nav className="mx-auto flex max-w-5xl items-center gap-4 px-4 py-3">
+      <nav className="mx-auto flex max-w-5xl flex-wrap items-center gap-x-4 gap-y-2 px-4 py-3">
         <Link href="/" className="text-lg font-bold text-emerald-700">
           {t("brand")}
         </Link>
-        <div className="flex-grow" />
+        <div className="flex w-full flex-wrap gap-x-4 gap-y-1 sm:w-auto sm:flex-grow sm:flex-nowrap">
         {user &&
           links
             .filter((l) => !l.showFor || l.showFor === user.role)
@@ -50,6 +50,7 @@ export function Navbar() {
                 {l.label}
               </Link>
             ))}
+        </div>
         {user ? (
           <>
             <span className="text-sm text-slate-500">{user.name}</span>
