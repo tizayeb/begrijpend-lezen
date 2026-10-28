@@ -14,9 +14,11 @@ UI, data model, or scoring logic. Full design decisions: [../DESIGN.md](../DESIG
 ```bash
 cd web
 npm install
-npx prisma migrate deploy        # schema (uses DATABASE_URL in web/.env, SQLite by default)
-npm run seed                     # 2 complete Dutch exercises + demo users
-npm run dev                      # http://localhost:3000
+# Set DATABASE_URL in web/.env to a Postgres connection string
+# (e.g. a free Neon project: postgresql://...?sslmode=require)
+npx prisma db push          # create/refresh the schema
+npm run seed                # 2 complete Dutch exercises + demo users
+npm run dev                 # http://localhost:3000
 ```
 
 Demo accounts (password `welkom123`):
