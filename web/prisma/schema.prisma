@@ -42,6 +42,7 @@ model User {
   name         String
   passwordHash String
   role         Role
+  isActive     Boolean  @default(false)
   createdAt    DateTime @default(now())
 
   profile         StudentProfile?

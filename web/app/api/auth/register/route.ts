@@ -26,6 +26,7 @@ export async function POST(req: Request) {
         name,
         passwordHash: await hashPassword(password),
         role,
+        isActive: false,
         profile: role === "STUDENT" ? { create: { groep: groep || 8 } } : undefined,
       },
     });

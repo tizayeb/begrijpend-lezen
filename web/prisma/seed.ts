@@ -307,17 +307,17 @@ async function main() {
   const admin = await prisma.user.upsert({
     where: { email: "admin@demo.nl" },
     update: {},
-    create: { email: "admin@demo.nl", name: "Beheerder", passwordHash: pw, role: "ADMIN" },
+    create: { email: "admin@demo.nl", name: "Beheerder", passwordHash: pw, role: "ADMIN", isActive: true },
   });
   const parent = await prisma.user.upsert({
     where: { email: "ouder@demo.nl" },
     update: {},
-    create: { email: "ouder@demo.nl", name: "Opa van Salima", passwordHash: pw, role: "PARENT" },
+    create: { email: "ouder@demo.nl", name: "Opa van Salima", passwordHash: pw, role: "PARENT", isActive: true },
   });
   const student = await prisma.user.upsert({
     where: { email: "leerling@demo.nl" },
     update: {},
-    create: { email: "leerling@demo.nl", name: "Salima", passwordHash: pw, role: "STUDENT" },
+    create: { email: "leerling@demo.nl", name: "Salima", passwordHash: pw, role: "STUDENT", isActive: true },
   });
   await prisma.studentProfile.upsert({
     where: { userId: student.id },

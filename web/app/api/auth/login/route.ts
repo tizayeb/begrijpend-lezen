@@ -14,6 +14,12 @@ export async function POST(req: Request) {
     if (!user || !(await verifyPassword(password, user.passwordHash))) {
       return NextResponse.json({ error: "E-mail of wachtwoord klopt niet." }, { status: 401 });
     }
+    if (!user.isActive) {
+      return NextResponse.json(
+        { error: "Je account is nog niet geactiveerd. Neem contact op met de beheerder." },
+        { status: 403 }
+      );
+    }
     await createSession(user.id);
     const redirect =
       user.role === "STUDENT" ? "/bibliotheek" : user.role === "PARENT" ? "/ouder" : "/admin";

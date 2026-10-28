@@ -47,6 +47,7 @@ export async function getSessionUser() {
       where: { id: payload.sub as string },
       include: { profile: true },
     });
+    if (!user || !user.isActive) return null;
     return user;
   } catch {
     return null;

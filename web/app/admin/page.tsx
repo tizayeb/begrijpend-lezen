@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { Navbar } from "@/components/Navbar";
+import { AdminSubnav } from "@/components/AdminSubnav";
 import { useI18n } from "@/components/LanguageProvider";
 
 interface AdminPassage {
@@ -246,6 +247,7 @@ export default function AdminPage() {
     <Navbar />
     <main className="mx-auto max-w-6xl px-4 py-8">
       <h1 className="text-2xl font-bold">{t("admin.title")}</h1>
+      <AdminSubnav active="passages" />
 
       {msg && <p className="mt-3 rounded-lg bg-slate-100 px-4 py-2 text-sm">{msg}</p>}
 

@@ -26,7 +26,7 @@ export default function LoginPage() {
     setBusy(false);
     if (!res.ok) {
       const d = await res.json();
-      setError(d.error || t("login.failed"));
+      setError(res.status === 403 ? t("login.notActive") : d.error || t("login.failed"));
       return;
     }
     const d = await res.json();
