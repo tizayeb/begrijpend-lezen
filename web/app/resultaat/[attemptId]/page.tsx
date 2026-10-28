@@ -45,6 +45,29 @@ export default function ResultaatPage() {
   const [data, setData] = useState<AttemptResult | null>(null);
   const [error, setError] = useState("");
   const { attemptId } = useParams<{ attemptId: string }>();
+  const [role, setRole] = useState<string>("");
+  const [aiPrompt, setAiPrompt] = useState<string>("");
+  const [aiOpen, setAiOpen] = useState(false);
+  const [importText, setImportText] = useState("");
+  const [aiMsg, setAiMsg] = useState("");
+
+  useEffect(() => {
+    fetch("/api/auth/me")
+      .then(async (res) => (res.ok ? res.json() : null))
+      .then((d) => {
+        const r = d?.user?.role ?? "";
+        setRole(r);
+        if (r === "PARENT" || r === "ADMIN") {
+          fetch(`/api/attempts/${attemptId}/ai-prompt`)
+            .then(async (res) => (res.ok ? res.json() : null))
+            .then((p) => setAiPrompt(p?.prompt ?? ""))
+            .catch(() => {});
+        }
+      })
+      .catch(() => {});
+  }, [attemptId]);
+
+  const isAdult = role === "PARENT" || role === "ADMIN";
 
   useEffect(() => {
     fetch(`/api/attempts/${attemptId}`)
@@ -55,6 +78,55 @@ export default function ResultaatPage() {
       .then((d) => setData(d.attempt))
       .catch((e) => setError(e.message));
   }, [attemptId]);
+
+  async function copyPrompt() {
+    try {
+      await navigator.clipboard.writeText(aiPrompt);
+      setAiMsg(t("ai.copied"));
+    } catch {
+      setAiOpen(true);
+      setAiMsg(t("ai.copyFailed"));
+    }
+  }
+
+  async function importAiResults() {
+    setAiMsg("");
+    let parsed: unknown;
+    try {
+      // Tolerate markdown fences like ```json ... ```
+      const cleaned = importText.replace(/^```(?:json)?\s*/i, "").replace(/\s*```$/i, "").trim();
+      parsed = JSON.parse(cleaned);
+    } catch {
+      setAiMsg(t("ai.invalidJson"));
+      return;
+    }
+    const results = Array.isArray(parsed)
+      ? parsed
+      : ((parsed as { evaluations?: unknown[]; results?: unknown[] })?.evaluations ??
+        (parsed as { results?: unknown[] })?.results);
+    if (!Array.isArray(results)) {
+      setAiMsg(t("ai.invalidJson"));
+      return;
+    }
+    const res = await fetch(`/api/attempts/${attemptId}/ai-evaluations`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ evaluations: results }),
+    });
+    const out = await res.json();
+    if (!res.ok) {
+      setAiMsg(out.error ?? t("ai.importFailed"));
+      return;
+    }
+    setAiMsg(
+      t("ai.imported").replace(
+        "{score}",
+        `${out.scorePct ?? "?"}`
+      )
+    );
+    const refreshed = await fetch(`/api/attempts/${attemptId}`);
+    if (refreshed.ok) setData((await refreshed.json()).attempt);
+  }
 
   const STATUS_BADGE: Record<string, string> = {
     CORRECT: "bg-blue-100 text-blue-800",
@@ -129,6 +201,56 @@ export default function ResultaatPage() {
             ))}
           </ol>
         </section>
+
+        {isAdult && (
+          <section className="mt-6 rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <div>
+                <h2 className="font-semibold">{t("ai.title")}</h2>
+                <p className="text-sm text-slate-500">{t("ai.subtitle")}</p>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                <button
+                  type="button"
+                  onClick={copyPrompt}
+                  className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-700"
+                >
+                  {t("ai.copyPrompt")}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setAiOpen((v) => !v)}
+                  className="rounded-lg border border-slate-300 px-4 py-2 text-sm font-semibold hover:bg-slate-100"
+                >
+                  {aiOpen ? t("ai.hideImport") : t("ai.showImport")}
+                </button>
+              </div>
+            </div>
+            {aiOpen && (
+              <div className="mt-4 border-t border-slate-200 pt-4">
+                <label htmlFor="ai-import" className="block text-sm font-medium">
+                  {t("ai.pasteLabel")}
+                </label>
+                <textarea
+                  id="ai-import"
+                  value={importText}
+                  onChange={(e) => setImportText(e.target.value)}
+                  rows={8}
+                  placeholder='[{"questionId":"…","status":"CORRECT","scorePct":100,"explanation":"…"}]'
+                  className="mt-1 w-full rounded-lg border border-slate-300 p-3 font-mono text-xs"
+                />
+                <button
+                  type="button"
+                  onClick={importAiResults}
+                  className="mt-2 rounded-lg bg-teal-700 px-4 py-2 text-sm font-semibold text-white hover:bg-teal-800"
+                >
+                  {t("ai.import")}
+                </button>
+              </div>
+            )}
+            {aiMsg && <p className="mt-3 text-sm text-slate-700">{aiMsg}</p>}
+          </section>
+        )}
 
         <h2 className="mt-8 text-xl font-bold">{t("result.perQuestion")}</h2>
         <ol className="mt-3 space-y-5">

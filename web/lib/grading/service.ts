@@ -94,6 +94,162 @@ export async function gradeAttempt(attemptId: string) {
   });
 }
 
+const VALID_STATUSES = ["CORRECT", "PARTIAL", "INCORRECT", "UNANSWERED"];
+
+const STATUS_SCORE_RANGE: Record<string, [number, number]> = {
+  CORRECT: [95, 100],
+  PARTIAL: [40, 94],
+  INCORRECT: [0, 39],
+  UNANSWERED: [0, 0],
+};
+
+/**
+ * Applies externally graded results (e.g. from an AI the parent used via the
+ * exported prompt) to a SUBMITTED attempt, then rebuilds score, skill results
+ * and recommendations. Throws Error with a Dutch message on invalid input.
+ */
+export async function applyExternalEvaluations(attemptId: string, results: EvalResult[]) {
+  const attempt = await prisma.exerciseAttempt.findUniqueOrThrow({
+    where: { id: attemptId },
+    include: { answers: true },
+  });
+  if (attempt.status !== "SUBMITTED") {
+    throw new Error("Alleen ingeleverde pogingen kunnen bijgewerkt worden.");
+  }
+  const snapshot = JSON.parse(attempt.snapshot) as AttemptSnapshot;
+
+  const byId = new Map(
+    results.map((r, i) => [String((r as { questionId?: unknown })?.questionId ?? ""), { r, i }] as const)
+  );
+  const unknown = Array.from(byId.keys()).filter((qid) => !snapshot.questions.some((q) => q.id === qid));
+  if (unknown.length > 0) {
+    throw new Error(`Onbekende vraag-id's: ${unknown.slice(0, 3).join(", ")}`);
+  }
+
+  // Build the fully corrected evaluation set first; only write when all rows are valid.
+  type EvalRow = {
+    status: string;
+    scorePct: number;
+    explanation: string;
+    didWell: string;
+    needsImprovement: string;
+    exampleAnswer: string;
+    questionId: string;
+  };
+  const rows: EvalRow[] = [];
+  for (const q of snapshot.questions) {
+    const entry = byId.get(q.id);
+    if (!entry) throw new Error(`Vraag ontbreekt in de resultaten: ${q.id.slice(0, 8)}…`);
+    const r = entry.r as Partial<EvalResult>;
+    const status = String(r.status ?? "");
+    if (!VALID_STATUSES.includes(status)) {
+      throw new Error(
+        `Ongeldige status bij vraag ${snapshot.questions.indexOf(q) + 1}: "${status}". Toegestaan: ${VALID_STATUSES.join(", ")}.`
+      );
+    }
+    const scorePct = Math.round(Number(r.scorePct));
+    const [lo, hi] = STATUS_SCORE_RANGE[status];
+    if (!Number.isFinite(scorePct) || scorePct < lo || scorePct > hi) {
+      throw new Error(
+        `scorePct bij vraag ${snapshot.questions.indexOf(q) + 1} (${scorePct}) past niet bij status ${status} (verwacht ${lo}-${hi}).`
+      );
+    }
+    let explanation = String(r.explanation ?? "").trim();
+    if (!explanation) {
+      explanation =
+        status === "CORRECT"
+          ? "Je antwoord is goed!"
+          : status === "PARTIAL"
+            ? "Je bent op de goede weg, maar het antwoord is nog niet compleet."
+            : status === "UNANSWERED"
+              ? "Je hebt deze vraag niet beantwoord."
+              : "Dit antwoord klopt niet met de tekst.";
+    }
+    rows.push({
+      status,
+      scorePct,
+      explanation,
+      didWell: String(r.didWell ?? "-").trim() || "-",
+      needsImprovement: String(r.needsImprovement ?? "-").trim() || "-",
+      exampleAnswer: String(r.exampleAnswer ?? "").trim() || q.modelAnswer || "",
+      questionId: q.id,
+    });
+  }
+
+  // Upsert answers + evaluations.
+  let totalPct = 0;
+  for (const row of rows) {
+    const evalData = {
+      status: row.status as "CORRECT" | "PARTIAL" | "INCORRECT" | "UNANSWERED",
+      scorePct: row.scorePct,
+      explanation: row.explanation,
+      didWell: row.didWell,
+      needsImprovement: row.needsImprovement,
+      exampleAnswer: row.exampleAnswer,
+    };
+    let answer = attempt.answers.find((a) => a.questionId === row.questionId);
+    if (!answer) {
+      answer = await prisma.studentAnswer.create({
+        data: { attemptId: attempt.id, questionId: row.questionId, text: null },
+      });
+    }
+    await prisma.evaluation.upsert({
+      where: { answerId: answer.id },
+      update: evalData,
+      create: { answerId: answer.id, ...evalData },
+    });
+    totalPct += row.scorePct;
+  }
+
+  // Rebuild score, skill results and recommendations.
+  const scorePct = snapshot.questions.length
+    ? Math.round((totalPct / snapshot.questions.length) * 10) / 10
+    : 0;
+
+  const answered = await prisma.studentAnswer.findMany({
+    where: { attemptId: attempt.id },
+    include: { evaluation: true },
+  });
+  const agg = aggregateSkills(snapshot, answered);
+
+  await prisma.skillResult.deleteMany({ where: { attemptId: attempt.id } });
+  for (const [skillKey, a] of Object.entries(agg)) {
+    const skill = await prisma.learningSkill.findUnique({ where: { key: skillKey } });
+    if (!skill) continue;
+    await prisma.skillResult.create({
+      data: {
+        attemptId: attempt.id,
+        skillId: skill.id,
+        correct: a.correct,
+        partial: a.partial,
+        total: a.total,
+      },
+    });
+  }
+
+  await prisma.learningRecommendation.deleteMany({ where: { attemptId: attempt.id } });
+  const recommendations = buildRecommendations(agg);
+  for (let i = 0; i < recommendations.length; i++) {
+    await prisma.learningRecommendation.create({
+      data: {
+        attemptId: attempt.id,
+        index: i,
+        text: recommendations[i].text,
+        skillKey: recommendations[i].skillKey ?? null,
+      },
+    });
+  }
+
+  return prisma.exerciseAttempt.update({
+    where: { id: attempt.id },
+    data: {
+      scorePct,
+      score: Math.round((scorePct / 100) * snapshot.questions.length * 10) / 10,
+    },
+    include: { answers: { include: { evaluation: true } } },
+  });
+}
+
 function aggregateSkills(
   snapshot: AttemptSnapshot,
   answers: { questionId: string; evaluation: { status: string } | null }[]

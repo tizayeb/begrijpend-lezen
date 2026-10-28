@@ -9,6 +9,19 @@ export const LOCALES: { code: Locale; label: string }[] = [
 export const DICT: Record<Locale, Record<string, string>> = {
   nl: {
     "brand": "Begrijpend Lezen",
+    "ai.title": "Beoordeel met AI",
+    "ai.subtitle": "Kopieer de prompt, plak die in een AI-chat (bijv. ChatGPT) en plak het resultaat hier terug in het systeem.",
+    "ai.copyPrompt": "Kopieer AI-prompt",
+    "ai.copied": "Prompt gekopieerd. Plak die in een AI-chat en vraag om exact de gevraagde JSON als antwoord.",
+    "ai.copyFailed": "Kopiëren is mislukt — gebruik de knop 'Importeren tonen' en plak handmatig.",
+    "ai.showImport": "Importeren tonen",
+    "ai.hideImport": "Importeren verbergen",
+    "ai.pasteLabel": "Plak hier de JSON met de AI-beoordelingen",
+    "ai.import": "Resultaten importeren",
+    "ai.invalidJson": "Dit is geen geldige JSON. Kopieer alleen de JSON-array uit het AI-antwoord.",
+    "ai.importFailed": "Importeren mislukt.",
+    "ai.imported": "Resultaten geïmporteerd! Nieuwe score: {score}%. Herlaad de pagina voor alle details.",
+
     "nav.library": "Bibliotheek",
     "nav.progress": "Mijn voortgang",
     "nav.parent": "Ouderdashboard",
@@ -203,6 +216,19 @@ export const DICT: Record<Locale, Record<string, string>> = {
 
   en: {
     "brand": "Reading Comprehension",
+    "ai.title": "Assess with AI",
+    "ai.subtitle": "Copy the prompt, paste it into any AI chat (e.g. ChatGPT), then paste the result back into the system.",
+    "ai.copyPrompt": "Copy AI prompt",
+    "ai.copied": "Prompt copied. Paste it into an AI chat and ask for exactly the requested JSON.",
+    "ai.copyFailed": "Copy failed — use 'Show import' and paste manually.",
+    "ai.showImport": "Show import",
+    "ai.hideImport": "Hide import",
+    "ai.pasteLabel": "Paste the JSON with AI evaluations here",
+    "ai.import": "Import results",
+    "ai.invalidJson": "This is not valid JSON. Copy only the JSON array from the AI answer.",
+    "ai.importFailed": "Import failed.",
+    "ai.imported": "Results imported! New score: {score}%. Refresh the page for all details.",
+
     "nav.library": "Library",
     "nav.progress": "My progress",
     "nav.parent": "Parent dashboard",
@@ -397,6 +423,19 @@ export const DICT: Record<Locale, Record<string, string>> = {
 
   tr: {
     "brand": "Anlama Becerisi",
+    "ai.title": "Yapay zekâ ile değerlendir",
+    "ai.subtitle": "Prompt'u kopyala, herhangi bir yapay zekâ sohbetine (örn. ChatGPT) yapıştır, sonucu sisteme geri yapıştır.",
+    "ai.copyPrompt": "Yapay zekâ prompt'unu kopyala",
+    "ai.copied": "Prompt kopyalandı. Bir yapay zekâ sohbetine yapıştır ve tam olarak istenen JSON'u cevap olarak iste.",
+    "ai.copyFailed": "Kopyalama başarısız — 'İçe aktarmayı göster'i kullan ve elle yapıştır.",
+    "ai.showImport": "İçe aktarmayı göster",
+    "ai.hideImport": "İçe aktarmayı gizle",
+    "ai.pasteLabel": "Yapay zekâ değerlendirmelerini içeren JSON'u buraya yapıştır",
+    "ai.import": "Sonuçları içe aktar",
+    "ai.invalidJson": "Bu geçerli bir JSON değil. Yapay zekâ cevabından yalnızca JSON dizisini kopyala.",
+    "ai.importFailed": "İçe aktarma başarısız.",
+    "ai.imported": "Sonuçlar içe aktarıldı! Yeni puan: %{score}. Tüm detaylar için sayfayı yenile.",
+
     "nav.library": "Kütüphane",
     "nav.progress": "İlerlemem",
     "nav.parent": "Ebeveyn paneli",
