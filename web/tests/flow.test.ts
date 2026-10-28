@@ -5,6 +5,14 @@ import fs from "fs";
 
 const testDbPath = path.join(__dirname, "test.db");
 
+const schema = fs.readFileSync(path.join(__dirname, "../prisma/schema.prisma"), "utf8");
+const isSqlite = /provider\s*=\s*"sqlite"/.test(schema);
+const describeFlow = isSqlite ? describe : describe.skip;
+
+if (!isSqlite) {
+  process.env.DATABASE_URL = `file:${testDbPath}`; // keep lib/db importable; suite will skip
+}
+
 // Fresh schema
 beforeAll(() => {
   if (fs.existsSync(testDbPath)) fs.rmSync(testDbPath);
@@ -30,7 +38,7 @@ const ID = {
   student: "", otherStudent: "", parent: "", admin: "", passage: "", attempt: "", attempt2: "",
 };
 
-describe("access control + grading flow (integration)", () => {
+describeFlow("access control + grading flow (integration)", () => {
   beforeAll(async () => {
     const pw = await bcrypt.hash("welkom123", 4);
     for (const [k, name, role] of [
