@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { Navbar } from "@/components/Navbar";
 import { AdminSubnav } from "@/components/AdminSubnav";
 import { useI18n } from "@/components/LanguageProvider";
@@ -90,84 +90,95 @@ export default function AdminUsersPage() {
               </thead>
               <tbody>
                 {users.map((u) => (
-                  <tr key={u.id} className="border-t border-slate-100 align-top">
-                    <td className="py-3 pr-3 font-medium">
-                      {u.name}
-                      {u.profile && (
-                        <span className="ml-1 text-xs text-slate-400">
-                          ({t("users.groep")} {u.profile.groep})
+                  <Fragment key={u.id}>
+                    <tr className="border-t border-slate-100">
+                      <td className="py-3 pr-3 font-medium align-middle">
+                        {u.name}
+                        {u.profile && (
+                          <span className="ml-1 whitespace-nowrap text-xs text-slate-400">
+                            ({t("users.groep")} {u.profile.groep})
+                          </span>
+                        )}
+                      </td>
+                      <td className="pr-3 align-middle text-slate-600">{u.email}</td>
+                      <td className="pr-3 align-middle">{ROLE_LABEL[u.role]}</td>
+                      <td className="pr-3 align-middle">
+                        <span
+                          className={
+                            "rounded-full px-2.5 py-0.5 text-xs font-medium " +
+                            (u.isActive
+                              ? "bg-teal-100 text-teal-800"
+                              : "bg-slate-100 text-slate-600")
+                          }
+                        >
+                          {u.isActive ? t("users.active") : t("users.inactive")}
                         </span>
-                      )}
-                    </td>
-                    <td className="pr-3 text-slate-600">{u.email}</td>
-                    <td className="pr-3">{ROLE_LABEL[u.role]}</td>
-                    <td className="pr-3">
-                      <span
-                        className={
-                          "rounded-full px-2.5 py-0.5 text-xs font-medium " +
-                          (u.isActive
-                            ? "bg-teal-100 text-teal-800"
-                            : "bg-slate-100 text-slate-600")
-                        }
-                      >
-                        {u.isActive ? t("users.active") : t("users.inactive")}
-                      </span>
-                    </td>
-                    <td className="py-3">
-                      <div className="flex flex-wrap items-center gap-2">
-                        {u.isActive ? (
+                      </td>
+                      <td className="py-3 align-middle">
+                        <div className="flex flex-wrap items-center gap-2">
+                          {u.isActive ? (
+                            <button
+                              type="button"
+                              disabled={busyId === u.id}
+                              onClick={() => patch(u.id, { isActive: false }, t("users.deactivated"))}
+                              className="rounded-lg border border-slate-300 px-3 py-1.5 font-medium hover:bg-slate-100 disabled:opacity-50"
+                            >
+                              {t("users.deactivate")}
+                            </button>
+                          ) : (
+                            <button
+                              type="button"
+                              disabled={busyId === u.id}
+                              onClick={() => patch(u.id, { isActive: true }, t("users.activated"))}
+                              className="rounded-lg bg-teal-700 px-3 py-1.5 font-semibold text-white hover:bg-teal-800 disabled:opacity-50"
+                            >
+                              {t("users.activate")}
+                            </button>
+                          )}
                           <button
                             type="button"
                             disabled={busyId === u.id}
-                            onClick={() => patch(u.id, { isActive: false }, t("users.deactivated"))}
+                            onClick={() => {
+                              setPwOpenId(pwOpenId === u.id ? "" : u.id);
+                              setPw("");
+                            }}
+                            aria-expanded={pwOpenId === u.id}
                             className="rounded-lg border border-slate-300 px-3 py-1.5 font-medium hover:bg-slate-100 disabled:opacity-50"
                           >
-                            {t("users.deactivate")}
-                          </button>
-                        ) : (
-                          <button
-                            type="button"
-                            disabled={busyId === u.id}
-                            onClick={() => patch(u.id, { isActive: true }, t("users.activated"))}
-                            className="rounded-lg bg-teal-700 px-3 py-1.5 font-semibold text-white hover:bg-teal-800 disabled:opacity-50"
-                          >
-                            {t("users.activate")}
-                          </button>
-                        )}
-                        <button
-                          type="button"
-                          disabled={busyId === u.id}
-                          onClick={() => {
-                            setPwOpenId(pwOpenId === u.id ? "" : u.id);
-                            setPw("");
-                          }}
-                          className="rounded-lg border border-slate-300 px-3 py-1.5 font-medium hover:bg-slate-100 disabled:opacity-50"
-                        >
-                          {pwOpenId === u.id ? t("users.cancelPw") : t("users.setPassword")}
-                        </button>
-                      </div>
-                      {pwOpenId === u.id && (
-                        <div className="mt-2 flex flex-wrap items-center gap-2">
-                          <input
-                            type="text"
-                            value={pw}
-                            onChange={(e) => setPw(e.target.value)}
-                            placeholder={t("users.newPassword")}
-                            className="rounded-lg border border-slate-300 px-3 py-1.5"
-                            autoComplete="new-password"
-                          />
-                          <button
-                            type="button"
-                            disabled={busyId === u.id || pw.length < 8}
-                            onClick={() => patch(u.id, { password: pw }, t("users.passwordSaved"))}
-                            className="rounded-lg bg-blue-600 px-3 py-1.5 font-semibold text-white hover:bg-blue-700 disabled:opacity-50"
-                          >
-                            {t("users.savePassword")}
+                            {pwOpenId === u.id ? t("users.cancelPw") : t("users.setPassword")}
                           </button>
                         </div>
-                      )}
-                    </td>
-                  </tr>
+                      </td>
+                    </tr>
+                    {pwOpenId === u.id && (
+                      <tr className="border-t border-slate-100 bg-slate-50">
+                        <td colSpan={5} className="px-4 py-4">
+                          <div className="flex flex-wrap items-center gap-3">
+                            <label htmlFor={"pw-" + u.id} className="text-sm font-medium">
+                              {t("users.setPassword")} — {u.name}:
+                            </label>
+                            <input
+                              id={"pw-" + u.id}
+                              type="text"
+                              value={pw}
+                              onChange={(e) => setPw(e.target.value)}
+                              placeholder={t("users.newPassword")}
+                              className="w-56 rounded-lg border border-slate-300 bg-white px-3 py-1.5"
+                              autoComplete="new-password"
+                            />
+                            <button
+                              type="button"
+                              disabled={busyId === u.id || pw.length < 8}
+                              onClick={() => patch(u.id, { password: pw }, t("users.passwordSaved"))}
+                              className="rounded-lg bg-blue-600 px-3 py-1.5 font-semibold text-white hover:bg-blue-700 disabled:opacity-50"
+                            >
+                              {t("users.savePassword")}
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    )}
+                  </Fragment>
                 ))}
               </tbody>
             </table>
