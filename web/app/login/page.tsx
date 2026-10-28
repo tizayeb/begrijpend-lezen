@@ -80,7 +80,6 @@ export default function LoginPage() {
           </Link>
         </p>
       </form>
-      <p className="mt-4 text-center text-xs text-slate-500">{t("login.demo")}</p>
     </main>
   );
 }
