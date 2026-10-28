@@ -87,7 +87,7 @@ export default function OuderPage() {
             className="mt-1 block w-56 rounded-lg border border-slate-300 px-3 py-2 text-base"
           />
         </label>
-        <button className="rounded-lg bg-emerald-600 px-4 py-2.5 font-semibold text-white hover:bg-emerald-700">
+        <button className="rounded-lg bg-blue-600 px-4 py-2.5 font-semibold text-white hover:bg-blue-700">
           {t("parent.link")}
         </button>
         {msg && <p className="text-sm text-slate-600">{msg}</p>}
@@ -100,7 +100,7 @@ export default function OuderPage() {
             onClick={() => setSelected(c.id)}
             className={
               "rounded-lg px-4 py-2 text-sm font-semibold " +
-              (selected === c.id ? "bg-emerald-600 text-white" : "bg-white border border-slate-300 hover:bg-slate-100")
+              (selected === c.id ? "bg-blue-600 text-white" : "bg-white border border-slate-300 hover:bg-slate-100")
             }
           >
             {c.name} {c.groep ? `(${t("parent.group")} ${c.groep})` : ""}
@@ -141,9 +141,9 @@ export default function OuderPage() {
           </ul>
 
           <div className="mt-6 grid gap-6 sm:grid-cols-2">
-            <section className="rounded-xl border border-emerald-200 bg-emerald-50 p-5">
-              <h3 className="font-semibold text-emerald-900">{t("parent.strong")}</h3>
-              <ul className="mt-2 space-y-1 text-sm text-emerald-900">
+            <section className="rounded-xl border border-blue-200 bg-blue-50 p-5">
+              <h3 className="font-semibold text-blue-900">{t("parent.strong")}</h3>
+              <ul className="mt-2 space-y-1 text-sm text-blue-900">
                 {progress.skills.filter((s) => s.pct >= 70).length
                   ? progress.skills.filter((s) => s.pct >= 70).map((s) => <li key={s.key}>• {s.label} ({s.pct}%)</li>)
                     : <li>{t("parent.noData")}</li>}

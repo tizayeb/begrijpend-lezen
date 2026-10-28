@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { LanguageSwitcher, useI18n } from "@/components/LanguageProvider";
+import { Logo } from "@/components/Logo";
 
 export interface NavUser {
   id: string;
@@ -38,15 +39,15 @@ export function Navbar() {
   return (
     <header className="border-b border-slate-200 bg-white">
       <nav className="mx-auto flex max-w-5xl flex-wrap items-center gap-x-4 gap-y-2 px-4 py-3">
-        <Link href="/" className="text-lg font-bold text-emerald-700">
-          {t("brand")}
+        <Link href="/">
+          <Logo markClass="h-9 w-auto" textClass="text-lg sm:text-xl" />
         </Link>
         <div className="flex w-full flex-wrap gap-x-4 gap-y-1 sm:w-auto sm:flex-grow sm:flex-nowrap">
         {user &&
           links
             .filter((l) => !l.showFor || l.showFor === user.role)
             .map((l) => (
-              <Link key={l.href} href={l.href} className="text-sm font-medium hover:text-emerald-700">
+              <Link key={l.href} href={l.href} className="text-sm font-medium hover:text-blue-700">
                 {l.label}
               </Link>
             ))}
@@ -64,7 +65,7 @@ export function Navbar() {
         ) : (
           <Link
             href="/login"
-            className="rounded-lg bg-emerald-600 px-3 py-1.5 text-sm font-semibold text-white hover:bg-emerald-700"
+            className="rounded-lg bg-blue-600 px-3 py-1.5 text-sm font-semibold text-white hover:bg-blue-700"
           >
             {t("nav.login")}
           </Link>

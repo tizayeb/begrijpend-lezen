@@ -3,6 +3,7 @@
 import { useParams, useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { LanguageSwitcher, useI18n } from "@/components/LanguageProvider";
+import { Logo } from "@/components/Logo";
 
 interface SnapshotQuestion {
   id: string;
@@ -180,7 +181,7 @@ export default function PogingPage() {
             <button
               onClick={submit}
               disabled={submitting}
-              className="mt-6 w-full rounded-xl bg-emerald-600 px-4 py-3 text-lg font-semibold text-white hover:bg-emerald-700 disabled:opacity-60"
+              className="mt-6 w-full rounded-xl bg-blue-600 px-4 py-3 text-lg font-semibold text-white hover:bg-blue-700 disabled:opacity-60"
             >
               {submitting ? t("exercise.submitting") : t("exercise.submit")}
             </button>
@@ -214,7 +215,7 @@ function HintedQuestion({
         {index}. {question.prompt}
       </p>
       {hints.length > 0 && (
-        <ul className="mt-2 space-y-0.5 text-sm text-emerald-700">
+        <ul className="mt-2 space-y-0.5 text-sm text-blue-700">
           {hints.map((h) => (
             <li key={h}>• {h}</li>
           ))}
@@ -228,7 +229,7 @@ function HintedQuestion({
               className={
                 "flex cursor-pointer items-center gap-3 rounded-lg border px-4 py-2.5 text-base " +
                 (value?.mcChoiceId === o.id
-                  ? "border-emerald-500 bg-emerald-50"
+                  ? "border-blue-500 bg-blue-50"
                   : "border-slate-200 hover:bg-slate-50")
               }
             >
@@ -237,7 +238,7 @@ function HintedQuestion({
                 name={`q_${question.id}`}
                 checked={value?.mcChoiceId === o.id}
                 onChange={() => onChange({ mcChoiceId: o.id, text: "" })}
-                className="size-4 text-emerald-600"
+                className="size-4 text-blue-600"
               />
               {o.text}
             </label>
@@ -248,7 +249,7 @@ function HintedQuestion({
           value={value?.text ?? ""}
           onChange={(e) => onChange({ text: e.target.value })}
           rows={4}
-          className="mt-3 w-full rounded-lg border border-slate-300 px-4 py-3 text-base focus:border-emerald-500 focus:outline-none"
+          className="mt-3 w-full rounded-lg border border-slate-300 px-4 py-3 text-base focus:border-blue-500 focus:outline-none"
           placeholder={t("exercise.placeholder")}
         />
       )}
@@ -261,11 +262,11 @@ function Navbar() {
   return (
     <header className="border-b border-slate-200 bg-white">
       <nav className="mx-auto flex max-w-5xl flex-wrap items-center gap-x-4 gap-y-2 px-4 py-3">
-        <a href="/bibliotheek" className="text-lg font-bold text-emerald-700">
-          {t("brand")}
+        <a href="/bibliotheek">
+          <Logo markClass="h-9 w-auto" textClass="text-lg sm:text-xl" />
         </a>
         <div className="flex w-full sm:w-auto sm:flex-1" />
-        <a href="/bibliotheek" className="text-sm font-medium hover:text-emerald-700">
+        <a href="/bibliotheek" className="text-sm font-medium hover:text-blue-700">
           {t("nav.library")}
         </a>
         <LanguageSwitcher />

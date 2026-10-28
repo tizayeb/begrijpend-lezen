@@ -143,7 +143,7 @@ export default function BibliotheekPage() {
                       className={
                         "rounded-full px-3 py-1 text-xs font-medium " +
                         (p.status === "afgerond"
-                          ? "bg-emerald-100 text-emerald-800"
+                          ? "bg-blue-100 text-blue-800"
                           : p.status === "in_uitvoering"
                             ? "bg-amber-100 text-amber-800"
                             : "bg-slate-100 text-slate-600")
@@ -154,7 +154,7 @@ export default function BibliotheekPage() {
                     </span>
                     <button
                       onClick={() => start(p.id)}
-                      className="rounded-lg bg-emerald-600 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-700"
+                      className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-700"
                     >
                       {p.status === "in_uitvoering" ? t("lib.continue") : t("lib.start")}
                     </button>

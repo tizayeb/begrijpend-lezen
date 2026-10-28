@@ -57,7 +57,7 @@ export default function ResultaatPage() {
   }, [attemptId]);
 
   const STATUS_BADGE: Record<string, string> = {
-    CORRECT: "bg-emerald-100 text-emerald-800",
+    CORRECT: "bg-blue-100 text-blue-800",
     PARTIAL: "bg-amber-100 text-amber-800",
     INCORRECT: "bg-red-100 text-red-700",
     UNANSWERED: "bg-slate-100 text-slate-600",
@@ -93,7 +93,7 @@ export default function ResultaatPage() {
         <Navbar />
         <main className="mx-auto max-w-3xl px-4 py-10">
           <p>{t("result.notSubmitted")}</p>
-          <a href={`/poging/${attemptId}`} className="font-medium text-emerald-700 hover:underline">
+          <a href={`/poging/${attemptId}`} className="font-medium text-blue-700 hover:underline">
             {t("result.continue")}
           </a>
         </main>
@@ -115,15 +115,15 @@ export default function ResultaatPage() {
         </p>
 
         <div className="mt-4 flex flex-wrap gap-2 text-sm">
-          <span className="rounded-full bg-emerald-100 px-3 py-1 text-emerald-800">{t("result.correct")}: {counts.CORRECT}</span>
+          <span className="rounded-full bg-blue-100 px-3 py-1 text-blue-800">{t("result.correct")}: {counts.CORRECT}</span>
           <span className="rounded-full bg-amber-100 px-3 py-1 text-amber-800">{t("result.partial")}: {counts.PARTIAL}</span>
           <span className="rounded-full bg-red-100 px-3 py-1 text-red-700">{t("result.incorrect")}: {counts.INCORRECT}</span>
           <span className="rounded-full bg-slate-100 px-3 py-1 text-slate-600">{t("result.unanswered")}: {counts.UNANSWERED}</span>
         </div>
 
-        <section className="mt-6 rounded-xl border border-emerald-200 bg-emerald-50 p-5">
-          <h2 className="font-semibold text-emerald-900">{t("result.tips")}</h2>
-          <ol className="mt-2 list-decimal space-y-1 pl-5 text-sm text-emerald-900">
+        <section className="mt-6 rounded-xl border border-blue-200 bg-blue-50 p-5">
+          <h2 className="font-semibold text-blue-900">{t("result.tips")}</h2>
+          <ol className="mt-2 list-decimal space-y-1 pl-5 text-sm text-blue-900">
             {data.recommendations.map((r) => (
               <li key={r.index}>{r.text}</li>
             ))}
@@ -174,7 +174,7 @@ export default function ResultaatPage() {
         <div className="mt-8 flex flex-wrap gap-3">
           <a
             href="/bibliotheek"
-            className="rounded-lg bg-emerald-600 px-4 py-2.5 font-semibold text-white hover:bg-emerald-700"
+            className="rounded-lg bg-blue-600 px-4 py-2.5 font-semibold text-white hover:bg-blue-700"
           >
             {t("result.nextExercise")}
           </a>

@@ -72,7 +72,7 @@ export default function VoortgangPage() {
         {data.attempts.length === 0 ? (
           <p className="mt-4 text-slate-600">
             {t("prog.empty")}{" "}
-            <a href="/bibliotheek" className="font-medium text-emerald-700 hover:underline">
+            <a href="/bibliotheek" className="font-medium text-blue-700 hover:underline">
               {t("nav.library")}
             </a>
             .
@@ -106,9 +106,9 @@ export default function VoortgangPage() {
             </ul>
 
             <div className="mt-8 grid gap-6 sm:grid-cols-2">
-              <section className="rounded-xl border border-emerald-200 bg-emerald-50 p-5">
-                <h2 className="font-semibold text-emerald-900">{t("prog.strong")}</h2>
-                <ul className="mt-2 space-y-1 text-sm text-emerald-900">
+              <section className="rounded-xl border border-blue-200 bg-blue-50 p-5">
+                <h2 className="font-semibold text-blue-900">{t("prog.strong")}</h2>
+                <ul className="mt-2 space-y-1 text-sm text-blue-900">
                   {strong.length ? strong.map((s) => <li key={s.key}>• {t(`skill.${s.key}`)} ({s.pct}%)</li>)
                     : <li>{t("prog.strongEmpty")}</li>}
                 </ul>

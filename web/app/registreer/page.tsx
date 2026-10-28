@@ -43,7 +43,7 @@ export default function RegisterPage() {
       <div className="absolute right-4 top-4">
         <LanguageSwitcher />
       </div>
-      <h1 className="mb-6 text-2xl font-bold text-emerald-700">{t("register.title")}</h1>
+      <h1 className="mb-6 text-2xl font-bold text-blue-700">{t("register.title")}</h1>
       <form onSubmit={submit} className="space-y-4 rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
         <label className="block text-sm font-medium">
           {t("register.name")}
@@ -105,13 +105,13 @@ export default function RegisterPage() {
         <button
           type="submit"
           disabled={busy}
-          className="w-full rounded-lg bg-emerald-600 px-4 py-2.5 text-base font-semibold text-white hover:bg-emerald-700 disabled:opacity-60"
+          className="w-full rounded-lg bg-blue-600 px-4 py-2.5 text-base font-semibold text-white hover:bg-blue-700 disabled:opacity-60"
         >
           {busy ? t("login.busy") : t("register.submit")}
         </button>
         <p className="text-center text-sm text-slate-600">
           {t("register.hasAccount")}{" "}
-          <Link href="/login" className="font-medium text-emerald-700 hover:underline">
+          <Link href="/login" className="font-medium text-blue-700 hover:underline">
             {t("register.doLogin")}
           </Link>
         </p>

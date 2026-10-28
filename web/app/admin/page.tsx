@@ -289,7 +289,7 @@ export default function AdminPage() {
                   {t("admin.duplicate")}
                 </button>
                 {p.status !== "PUBLISHED" && (
-                  <button onClick={() => publish(p.id, "PUBLISHED")} className="rounded bg-emerald-600 px-2.5 py-1 text-xs font-semibold text-white hover:bg-emerald-700">
+                  <button onClick={() => publish(p.id, "PUBLISHED")} className="rounded bg-blue-600 px-2.5 py-1 text-xs font-semibold text-white hover:bg-blue-700">
                     {t("admin.publish")}
                   </button>
                 )}
@@ -319,7 +319,7 @@ export default function AdminPage() {
         <div className="mt-4 flex flex-wrap items-center gap-3">
           <a
             href="/api/admin/passages/sample"
-            className="rounded-lg border border-emerald-600 px-4 py-2 text-sm font-semibold text-emerald-700 hover:bg-emerald-50"
+            className="rounded-lg border border-blue-600 px-4 py-2 text-sm font-semibold text-blue-700 hover:bg-blue-50"
             download
           >
             {t("admin.bulkDownload")}
@@ -344,7 +344,7 @@ export default function AdminPage() {
         <button
           onClick={bulkImport}
           disabled={bulkBusy}
-          className="mt-3 rounded-lg bg-emerald-600 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-700 disabled:opacity-50"
+          className="mt-3 rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-700 disabled:opacity-50"
         >
           {bulkBusy ? t("admin.bulkImporting") : t("admin.bulkImport")}
         </button>
@@ -407,7 +407,7 @@ export default function AdminPage() {
           + Open vraag
         </button>
         <button onClick={create} disabled={!questions.length}
-          className="rounded-lg bg-emerald-600 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-700 disabled:opacity-50">
+          className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-700 disabled:opacity-50">
           {t("admin.saveDraft")}
         </button>
       </div>
