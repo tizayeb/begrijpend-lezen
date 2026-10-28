@@ -1,0 +1,58 @@
+{
+  "items": [
+    {
+      "title": "De vos in Nederland",
+      "topic": "natuur",
+      "difficulty": "gemiddeld",
+      "estMinutes": 7,
+      "headings": ["Leven in het wild", "Slimme jagers"],
+      "objectives": [
+        "De vos beschrijven: leefgebied en voedsel",
+        "Onderscheiden tussen feit en aanname"
+      ],
+      "body": "## Leven in het wild\n\nDe vos (Vulpes vulpes) is een roofdier dat in bijna heel Europa voorkomt, ook in Nederland. Vossen leven vooral in bossen, weilanden en duingebieden. Maar sinds de jaren tachtig leven er steeds meer vossen in steden. Ze vinden daar schuilplaatsen in parken, tuinen en lege gebouwen.\n\nEen volwassen vos is ongeveer 60 tot 75 centimeter lang, zonder zijn staart erbij. Die staart wordt ongeveer een derde van de totale lichaamslengte. Vossen eten van alles: muizen, konijnen, vogels, eieren, insecten en appels die in de tuin zijn gevallen.\n\n## Slimme jagers\n\nDe vos jaagt vooral in de schemering en 's nachts. Zijn scherpe oren helpen hem om muizen te horen kruipen in het gras, tientallen meters verderop. Als de vos de muis hoort, springt hij er rechtop boven en grijpt het dier.\n\nVossen leven meestal alleen en vormen geen roedel, zoals wolven doen. In de winter bouwt een moedervos tegen de lente aan met twee tot zes jongen in een hol.",
+      "questions": [
+        {
+          "type": "MC",
+          "prompt": "Wat kun je uit de tekst afleiden over vossen in steden?",
+          "skillKey": "inference",
+          "options": [
+            "Er waren vroeger geen vossen in steden.",
+            "Er waren vroeger minder vossen in steden.",
+            "Er waren vroeger al veel vossen in steden.",
+            "De tekst zegt niets over het aantal vossen."
+          ],
+          "mcAnswerKey": 1
+        },
+        {
+          "type": "OPEN",
+          "prompt": "Waarom kan een vos in de stad overleven? Geef twee redenen en gebruik informatie uit de tekst.",
+          "skillKey": "evidence",
+          "modelAnswer": "Een vos kan in de stad overleven, omdat er schuilplaatsen zijn in parken, tuinen en lege gebouwen. Ook staat in de tekst dat hij van alles kan eten.",
+          "requireTwoArguments": true,
+          "requireEvidence": true,
+          "requireCompleteSentences": true,
+          "rubric": {
+            "keywordGroups": [
+              ["schuilplaats", "tuin", "park", "gebouw"],
+              ["eten", "voedsel", "muizen", "eet van alles"]
+            ],
+            "minChars": 30
+          }
+        },
+        {
+          "type": "MC",
+          "prompt": "Hoe lang is de staart van een volwassen vos ongeveer, als de lichaamslengte 66 cm is?",
+          "skillKey": "explicit_information",
+          "options": [
+            "Ongeveer 33 cm.",
+            "Ongeveer 60 cm.",
+            "Ongeveer 75 cm.",
+            "De tekst zegt dit niet."
+          ],
+          "mcAnswerKey": 0
+        }
+      ]
+    }
+  ]
+}

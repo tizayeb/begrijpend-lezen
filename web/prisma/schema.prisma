@@ -1,0 +1,209 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  STUDENT
+  PARENT
+  ADMIN
+}
+
+enum PassageStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+enum QuestionType {
+  MC
+  OPEN
+}
+
+enum AttemptStatus {
+  IN_PROGRESS
+  SUBMITTED
+}
+
+enum EvalStatus {
+  CORRECT
+  PARTIAL
+  INCORRECT
+  UNANSWERED
+}
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  name         String
+  passwordHash String
+  role         Role
+  createdAt    DateTime @default(now())
+
+  profile         StudentProfile?
+  attempts        ExerciseAttempt[]
+  authoredPassage ReadingPassage[]   @relation("Author")
+  reviews         ContentReview[]
+  parentLinks     ParentStudentRelationship[] @relation("Parent")
+  studentLinks    ParentStudentRelationship[] @relation("Student")
+}
+
+model StudentProfile {
+  id               String @id @default(cuid())
+  userId           String @unique
+  user             User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  groep            Int
+  defaultDifficulty String @default("gemiddeld")
+}
+
+model ParentStudentRelationship {
+  id        String @id @default(cuid())
+  parentId  String
+  studentId String
+  parent    User   @relation("Parent", fields: [parentId], references: [id], onDelete: Cascade)
+  student   User   @relation("Student", fields: [studentId], references: [id], onDelete: Cascade)
+
+  @@unique([parentId, studentId])
+}
+
+model LearningSkill {
+  questions Question[]
+  skillResults SkillResult[]
+  id          String @id @default(cuid())
+  key         String @unique
+  label       String
+  description String
+}
+
+model ReadingPassage {
+  id          String        @id @default(cuid())
+  title       String
+  topic       String
+  difficulty  String
+  estMinutes  Int
+  body        String
+  headings    String? // JSON array of section headings
+  objectives  String? // JSON array of learning objectives
+  status      PassageStatus @default(DRAFT)
+  version     Int           @default(1)
+  authorId    String?
+  author      User?         @relation("Author", fields: [authorId], references: [id])
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  questions Question[]
+  attempts  ExerciseAttempt[]
+  reviews   ContentReview[]
+}
+
+model Question {
+  id                       String       @id @default(cuid())
+  passageId                String
+  passage                  ReadingPassage @relation(fields: [passageId], references: [id], onDelete: Cascade)
+  order                    Int
+  type                     QuestionType
+  prompt                   String
+  skillId                  String
+  skill                    LearningSkill @relation(fields: [skillId], references: [id])
+  mcAnswerKey              Int?
+  modelAnswer              String?
+  requireTwoArguments      Boolean      @default(false)
+  requireEvidence          Boolean      @default(false)
+  requireCompleteSentences Boolean      @default(false)
+
+  options AnswerOption[]
+  rubric  GradingRubric?
+}
+
+model AnswerOption {
+  id         String   @id @default(cuid())
+  questionId String
+  question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  order      Int
+  text       String
+}
+
+model GradingRubric {
+  id             String   @id @default(cuid())
+  questionId     String   @unique
+  question       Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  keywordGroups  String // JSON: [[synonym,...],[...]]
+  minChars       Int      @default(10)
+  fullCreditRule String? // regex alternation granting full credit
+}
+
+model ExerciseAttempt {
+  id            String        @id @default(cuid())
+  studentId     String
+  student       User          @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  passageId     String
+  passage       ReadingPassage @relation(fields: [passageId], references: [id])
+  snapshot      String // JSON: passage text + questions + options + rubrics at attempt time
+  status        AttemptStatus @default(IN_PROGRESS)
+  score         Float?
+  scorePct      Float?
+  startedAt     DateTime      @default(now())
+  submittedAt   DateTime?
+
+  answers StudentAnswer[]
+  skills  SkillResult[]
+  recommendations LearningRecommendation[]
+}
+
+model StudentAnswer {
+  id         String   @id @default(cuid())
+  attemptId  String
+  attempt    ExerciseAttempt @relation(fields: [attemptId], references: [id], onDelete: Cascade)
+  questionId String
+  mcChoiceId String?
+  text       String?
+
+  evaluation Evaluation?
+}
+
+model Evaluation {
+  id               String     @id @default(cuid())
+  answerId         String     @unique
+  answer           StudentAnswer @relation(fields: [answerId], references: [id], onDelete: Cascade)
+  status           EvalStatus
+  scorePct         Float
+  explanation      String
+  didWell          String
+  needsImprovement String
+  exampleAnswer    String
+}
+
+model SkillResult {
+  id        String          @id @default(cuid())
+  attemptId String
+  attempt   ExerciseAttempt @relation(fields: [attemptId], references: [id], onDelete: Cascade)
+  skillId   String
+  skill     LearningSkill   @relation(fields: [skillId], references: [id])
+  correct   Int
+  partial   Int
+  total     Int
+}
+
+model LearningRecommendation {
+  id        String          @id @default(cuid())
+  attemptId String
+  attempt   ExerciseAttempt @relation(fields: [attemptId], references: [id], onDelete: Cascade)
+  index     Int
+  text      String
+  skillKey  String?
+}
+
+model ContentReview {
+  id          String       @id @default(cuid())
+  passageId   String
+  passage     ReadingPassage @relation(fields: [passageId], references: [id], onDelete: Cascade)
+  reviewerId  String
+  reviewer    User         @relation(fields: [reviewerId], references: [id])
+  verdict     String // APPROVED | CHANGES_REQUESTED
+  notes       String
+  createdAt   DateTime     @default(now())
+}
